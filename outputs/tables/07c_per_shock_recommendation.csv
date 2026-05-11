@@ -1,0 +1,5 @@
+shock,pricing_final_M,supply_central_M,recommendation,rationale,eta_used,supply_capture_used
+NYC sports,0.7657160821031224,0.7525262412232075,"Pricing wins, supply viable",pricing_net exceeds supply central but not by 1.5×.,0.4521006218682898,0.5
+NJ pregame (departure),1.8618143683501107,1.0025154291115987,Pricing dominant,pricing_net exceeds 1.5× supply central capture.,0.0,0.5
+Heavy rain,2.9549643571828,1.7421493842076041,Pricing dominant,pricing_net exceeds 1.5× supply central capture.,0.0866829972842021,0.5
+Storm active,0.0,2.9912392785173996,Operational lever (not pricing or supply),Zero net pricing uplift after η and demand-response framing.,0.1140716899811594,0.5

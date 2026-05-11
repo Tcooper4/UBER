@@ -1,0 +1,9 @@
+shock,spec,implied_price_lift_pct,rev_capture_per_hr,annualized_capture,note,implied_extra_trips_pct
+NYC sports,pricing,6.258939112451139,526.5919605494614,2150074.974923451,extractive framing,
+NJ pregame (departure),pricing,12.089147099187612,806.3991546907961,2864329.7974617076,extractive framing,
+Heavy rain,pricing,23.95848429312651,699.4898354643875,4977569.669164581,extractive framing,
+Storm active,pricing,,0.0,0.0,demand FALLING — pricing inapplicable per Cohen 2016 scoping,
+NYC sports,supply,,184.30718619231143,752526.2412232076,operational framing,2.1906286893578986
+NJ pregame (departure),supply,,282.23970414177893,1002515.4291115988,operational framing,4.231201484715664
+Heavy rain,supply,,244.82144241253573,1742149.3842076042,operational framing,8.385469502594278
+Storm active,supply,,16.081931604932254,2991239.2785173994,operational framing,0.80447679847232

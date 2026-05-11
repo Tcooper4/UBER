@@ -1,0 +1,7 @@
+scenario,tourist_inflow,wc_multiplier,tourist_lift_factor,forecasted_trip_lift_pct,attendance
+Group stage,500000,2.0,1.125,45.0,60000
+FINAL,500000,4.0,1.125,90.0,82500
+Group stage,1000000,2.0,1.25,50.0,60000
+FINAL,1000000,4.0,1.25,100.0,82500
+Group stage,2000000,2.0,1.5,60.0,60000
+FINAL,2000000,4.0,1.5,120.0,82500

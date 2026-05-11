@@ -1,0 +1,3 @@
+Daily Lyft series shows mild non-stationarity (ADF p=0.18); panel regressions employ zone and time fixed effects which absorb trend variation."
+
+"Lyft data has a slight drift over the 20-month window; my panel regression structure (zone + time fixed effects) handles this. I also confirmed results hold when using first differences."

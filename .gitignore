@@ -1,0 +1,49 @@
+# Large data files — DO NOT commit
+data/raw/
+data/processed/
+data/external/
+*.parquet
+*.shp
+*.shx
+*.dbf
+*.prj
+
+# DuckDB temp + cache
+data/processed/duckdb_temp/
+*.duckdb
+*.duckdb.wal
+
+# Large outputs we don't want to track
+outputs/figures/*.png
+!outputs/figures/.gitkeep
+outputs/figures.zip
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+.pytest_cache/
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+.cursorrules
+*.swp
+.DS_Store
+Thumbs.db
+
+# OS / OneDrive
+desktop.ini
+
+# Secrets
+.env
+*.key
+credentials.json
+
+# Backup files
+*_v*_backup.py
+*.bak

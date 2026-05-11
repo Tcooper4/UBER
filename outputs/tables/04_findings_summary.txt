@@ -1,0 +1,12 @@
+- Light rain: β=0.0051 → ~0.5% Δ trips.
+- Moderate rain: β=0.0222 → ~2.2% Δ trips.
+- Heavy rain: β=0.0435 → ~4.4% Δ trips.
+- Heat extreme (>90F): β=0.0231 → ~2.3% Δ.
+- Cold extreme (<20F): β=0.0240 → ~2.4% Δ.
+- Storm active: β=-0.0195 → ~-1.9% Δ.
+- Asymmetric rain: monotonically positive (light +0.5% → moderate +2.2% → heavy +4.4%).
+  · Heavier rain pushes MORE substitution INTO rideshare, not less.
+- Storm warnings drive opposite signal (-1.9%): full-storm conditions cause
+  demand collapse, not substitution.
+- Temperature extremes both positive: thermal discomfort (heat OR cold) drives
+  mode substitution. Quadratic minimum demand at ~51°F (comfortable walking temp).

@@ -1,0 +1,5 @@
+sample,flag,metric,beta,se,p_value,nobs,method
+scoped_departure_zones,is_nj_event_pregame_sym,log_trips,0.009884044619258367,0.011202612192216159,0.3776404849607544,9135,PanelOLS
+scoped_departure_zones,is_nj_event_pregame_sym,log_fpm,-0.00271574223559637,0.002297208364373464,0.23716240020620205,9135,PanelOLS
+full_panel_all_zones,is_nj_event_pregame_sym,log_trips,0.05333260801188675,0.012971275451276902,3.931392431111291e-05,156722,PanelOLS
+full_panel_all_zones,is_nj_event_pregame_sym,log_fpm,0.013972214018466066,0.002325106653994747,1.8676200586043024e-09,156722,PanelOLS

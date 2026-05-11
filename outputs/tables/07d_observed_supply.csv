@@ -1,0 +1,5 @@
+shock,observed_expansion_ratio,assumed_capture_at_50pct,ratio_observed_to_assumed,n_events,interpretation
+NYC sports,1.0391926173753434,0.021906286893578986,1.7891036288231608,4083,Observed expansion meets or exceeds the 50%-capture-implied lift; 50% assumption is conservative on this metric.
+NJ pregame (departure),1.078079441314715,0.04231201484715664,1.8453255321629272,3552,Observed expansion meets or exceeds the 50%-capture-implied lift; 50% assumption is conservative on this metric.
+Heavy rain,1.1656683932686,0.08385469502594278,1.975660315947079,7116,Observed expansion meets or exceeds the 50%-capture-implied lift; 50% assumption is conservative on this metric.
+Storm active,1.0155660132121955,0.0080447679847232,1.9349238215141782,186000,Observed expansion meets or exceeds the 50%-capture-implied lift; 50% assumption is conservative on this metric.

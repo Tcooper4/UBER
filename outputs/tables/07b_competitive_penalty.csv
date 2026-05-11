@@ -1,0 +1,9 @@
+scenario,value_M,note
+Pricing headline,9.991974441549742,before demand response
+Pricing after demand response,6.494783387007333,from 07_pricing_scenarios.csv
+Pricing net of competitive penalty (low),6.3346748714658805,sum_s alloc×η_high×ΔP_s (FIX D brackets)
+Pricing net of competitive penalty (central),6.388044376646364,sum_s alloc×η_used×ΔP_s
+Pricing net of competitive penalty (high),6.441413881826849,sum_s alloc×η_low×ΔP_s
+Supply central,6.48843033305981,50% capture frac (N07 central)
+Supply low sensitivity,3.8930581998358864,30% capture frac
+Supply high sensitivity,9.083802466283734,70% capture frac

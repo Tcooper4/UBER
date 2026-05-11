@@ -1,0 +1,23 @@
+WORLD CUP 2026 OPERATIONAL RECOMMENDATIONS
+
+1. Pre-position drivers in MetLife departure zones starting 5 hours pre-kickoff,
+   peaking 2 hours pre-kickoff. Zones to prioritize:
+     - Penn Station (zone 186) — highest baseline volume
+     - Times Square (zone 230) — tourist concentration
+     - Midtown Center (zone 161) — hotel cluster
+
+2. Pre-event supply incentives (driver bonus pools) — fund from forecasted
+   capture amount; threshold: incentive ≤ 30% of capture for positive ROI.
+
+3. Cross-platform data: monitor Lyft platform pre-game zone activity to assess
+   competitive supply positioning; adjust Uber driver bonuses accordingly.
+
+4. Tourist-specific UX: in-app prompts in 8 languages 4 hours pre-kickoff;
+   pre-booking option for fans who don't yet know NYC->NJ logistics.
+
+5. Coordinate with NJ Transit on bus shuttle baselines — substitution check
+   from N05 says transit captures up to 30% of demand-shift in CRZ
+   (different in NJ context, but principle applies).
+
+6. Final (July 19): expect highest-ever single-day NYC rideshare demand at
+   MetLife departure zones. Pre-allocate 2–3x normal driver pool 8 hours pre-kickoff.

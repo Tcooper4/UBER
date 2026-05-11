@@ -1,0 +1,54 @@
+The "issue" — 24 missing hours, not material
+Expected 14,640 unique hours, got 14,616. That's 24 missing hours over 20 months = 0.16%.
+This is almost certainly the daylight saving time transition. NYC observes DST, and "spring forward" loses an hour each spring. With 2 spring transitions in your window (March 2024 + March 2025), that's 2 hours. The remaining 22 hours are likely zone-hours where literally no Uber/Lyft trips occurred (deep middle-of-night, sparse outer-borough zones), so they don't appear in the TLC aggregation.
+Either explanation is fine. Not material.
+Finding I want to flag — your DiD signal is huge
+Look at Check 4:
+Uber pre-CP, in CRZ:   $5.90/mile  (135M trips outside CRZ at $4.68/mi)
+Uber post-CP, in CRZ:  $5.95/mile  (CRZ already premium)
+Uber pre-CP, outside:  $4.68/mile
+Uber post-CP, outside: $4.78/mile
+The DiD coefficient before any controls:
+
+(5.95 - 5.90) − (4.78 - 4.68) = $0.05 − $0.10 = −$0.05/mile
+
+CRZ fare-per-mile rose less than non-CRZ fare-per-mile after congestion pricing. That's weakly negative, possibly null. The naive descriptive signal is ambiguous.
+But this is what makes the analysis interesting:
+
+Volume side: CRZ trips dropped from 45M → 26M (-42%). That's a huge volume effect.
+Fare side: roughly flat.
+
+Implication: Congestion pricing reduced demand in the CRZ but didn't push fare-per-mile up much (supply matched the volume drop). That's actually a coherent story — riders cut trips, drivers redirected outside CRZ, equilibrium price held.
+Your headline DiD finding may not be "fare-per-mile rose" but rather "volume crashed, fare held." Different story than expected. This is a potential reframing moment — and exactly the kind of thing the case rewards finding.
+Don't lock in any narrative yet. Run the proper DiD with fixed effects in Notebook 03 and let the regression tell you.
+Other audit results
+Check 2: Zero duplicates. Primary key clean. ✅
+Check 3: CRZ has exactly 36 zones. Treatment splits sensible (14% of rows in CRZ × 39% post-CP = 5.7% in CRZ-post; matches 406,945 / 7.2M = 5.7%). ✅
+Check 5: Event flag math holds. Combined sym = NYC sym + NJ sym - tiny overlap (186 rows where Manhattan zones flagged for both NYC and NJ events same hour). ✅
+Check 6: Weather missing 1.93% — same as before. Acceptable. ✅
+Check 7 — interesting:
+
+Manhattan: 69% of rows have subway data. The 31% missing are zones without subway stations (e.g., Roosevelt Island, Governor's Island, parts of West Village).
+Brooklyn: 78.8% — high, dense subway.
+Queens: only 38.6% — a lot of Queens has no subway.
+Staten Island: 0% — Staten Island has no subway proper (only the SIR which isn't in the dataset).
+EWR (Newark Airport): 0% — irrelevant zone for subway.
+
+This is a real consideration: your cross-modal substitution analysis (Notebook 05) needs to filter to zones with subway access. Won't tell you anything meaningful about Staten Island substitution if there's no subway to substitute against. Add a has_subway filter to that notebook.
+Check 8: Uber gets ~3x Lyft volume. Median Uber zone-hour: 55 trips. Median Lyft: 19. Reasonable. ✅
+Check 9 — interesting:
+
+Saturday and Sunday have the most trips (highest dow values 5, 6 = 62M, 66M)
+Hour-of-day peaks at 18:00 (76.9 avg), low at 03:00 (20.8). Standard NYC pattern. ✅
+
+Check 10 — the top 5 anomaly is informative:
+2024-11-03 01:00 → zone 79 (East Village): 1,754 Uber trips, $6.84/mile
+2024-11-03 01:00 → zone 148 (Lower East Side): 1,489 Uber trips
+Nov 3 2024 = end of NYC Marathon day. 1am pickup in East Village/Lower East Side = post-marathon nightlife surge. Both zones are bar/nightlife districts, fare-per-mile elevated ($6.84 vs $4.68 baseline). This is a legitimate event spike, not a data error.
+2025-01-01 02:00 → zone 37: 1,254 trips, $8.31/mile
+New Year's Eve aftermath. Highest fare-per-mile in the top 5. Surge clearly visible. ✅
+These outliers tell a coherent story.
+Verdict
+Data is ready. Move to analysis.
+The 24-hour gap is DST + zero-trip zone-hours. Not material. Document it in the appendix if asked.
+The most interesting thing you've already found: the descriptive DiD signal on fare-per-mile is small/null. That suggests your headline finding will be on the volume side, not the price side. Stay open to that as you build Notebook 03.

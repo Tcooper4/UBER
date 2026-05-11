@@ -1,0 +1,10 @@
+- Elasticity central: ε=-0.7; sensitivity range [-0.5, -1.2].
+- Per shock, computed implied optimal fare lift = excess_demand% / |ε|.
+- Observed fpm rises 3-26% during shocks → surge IS already happening.
+- Foregone revenue is INCREMENTAL beyond observed surge.
+- Capturable estimate (after elasticity discounting): roughly 60-70% of headline figure, so $12M-$13M annual.
+- Foregone revenue uses shock-specific avg trip miles where available (global fallback 5.10 mi).
+- Largest opportunity: Heavy rain at $4,977,570/yr.
+- All numbers framed as inferred — surge multiplier itself is not observed in TLC public data.
+- Strategic takeaway: opportunity is in supply pre-positioning (capture volume at base fare),
+  not in raising prices on captive riders.

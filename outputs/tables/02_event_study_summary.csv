@@ -1,0 +1,7 @@
+category,N_events,primary_flag,median_lift_trips_pct,median_lift_fpm_pct,panel_B_log_trips,panel_B_log_fpm,panel_p_value,notes
+NYC sports,594.0,is_nyc_event_sym,4.1237260917642455,1.536281940189943,0.05743316284312195,0.008802129877661232,0.2378143681434679,Sym only in panel CSV (asym collapses on zone-day)
+NJ sports (scoped),124.0,is_nj_event_pregame_sym,5.650091865530327,-0.8889758383254842,0.009884044619258367,-0.00271574223559637,0.3776404849607544,Manhattan departure clusters
+NJ sports (full panel),,is_nj_event_pregame_sym,,,0.05333260801188675,0.013972214018466066,3.931392431111291e-05,Diluted vs scoped
+Political,6.0,is_nyc_event_asym,-35.57843319610755,,,,,N=6 exploratory
+Civic / parades / specials,14.0,is_nyc_event_sym,-30.630394889857666,,,,,"Marathon, bike tour, parades, NYE"
+Holidays,23.0,day_vs_samedow_baseline,-3.147370940771518,-8.023864875065977,,,,Day-level ratio-of-sums

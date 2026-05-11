@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Uber NYC Strategy Explorer — Pricing vs Supply by Shock</title>
+<style>
+  :root {
+    --bg: #0A0A0A;
+    --bg-card: #1F1F1F;
+    --bg-alt: #151515;
+    --text: #FFFFFF;
+    --text-muted: #9CA3AF;
+    --text-dim: #6B7280;
+    --accent: #06C167;
+    --warn: #EF4444;
+    --amber: #F59E0B;
+    --divider: #2A2A2A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    padding: 32px;
+    min-height: 100vh;
+  }
+  .container { max-width: 1400px; margin: 0 auto; }
+  header { margin-bottom: 32px; }
+  .eyebrow {
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 16px;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 24px;
+  }
+  .controls {
+    background: var(--bg-card);
+    border: 1px solid var(--divider);
+    border-radius: 8px;
+    padding: 24px;
+    position: sticky;
+    top: 24px;
+    align-self: start;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+  }
+  .control-group { margin-bottom: 24px; }
+  .control-group h3 {
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .slider-row {
+    margin-bottom: 16px;
+  }
+  .slider-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+  .slider-label .value {
+    color: var(--accent);
+    font-family: "Consolas", monospace;
+    font-weight: bold;
+  }
+  .slider {
+    width: 100%;
+    height: 4px;
+    background: var(--divider);
+    border-radius: 2px;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+  }
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+  }
+  .slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: none;
+  }
+  .helper {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    font-style: italic;
+  }
+  .toggle-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .toggle {
+    background: var(--bg-alt);
+    border: 1px solid var(--divider);
+    color: var(--text-muted);
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.15s;
+  }
+  .toggle.active {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+    font-weight: bold;
+  }
+  .reset-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--divider);
+    color: var(--text-muted);
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-top: 12px;
+  }
+  .reset-btn:hover { color: var(--text); border-color: var(--text-muted); }
+
+  /* Results column */
+  .summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--divider);
+    border-left: 4px solid var(--accent);
+    padding: 20px;
+    border-radius: 8px;
+  }
+  .stat-card.supply { border-left-color: var(--accent); }
+  .stat-card.pricing { border-left-color: var(--accent); }
+  .stat-card .label {
+    color: var(--text-muted);
+    font-size: 11px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .stat-card .value {
+    font-size: 36px;
+    font-weight: bold;
+    font-family: "Consolas", monospace;
+  }
+  .stat-card .sub {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 6px;
+  }
+  .winner {
+    grid-column: 1 / -1;
+    background: var(--bg-alt);
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+  }
+  .winner.supply-wins { border-color: var(--amber); }
+  .winner .label {
+    color: var(--accent);
+    font-size: 11px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  .winner.supply-wins .label { color: var(--amber); }
+  .winner .verdict {
+    font-size: 22px;
+    font-weight: bold;
+  }
+  .winner .margin {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-top: 6px;
+  }
+
+  /* Chart */
+  .chart-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--divider);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .chart-title {
+    font-size: 14px;
+    color: var(--text);
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+  .chart-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+  .bar-chart { width: 100%; }
+
+  /* Per-shock table */
+  .shock-table {
+    background: var(--bg-card);
+    border: 1px solid var(--divider);
+    border-radius: 8px;
+    padding: 24px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  th {
+    text-align: left;
+    color: var(--accent);
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    padding: 12px 8px;
+    border-bottom: 1px solid var(--divider);
+  }
+  td {
+    padding: 14px 8px;
+    border-bottom: 1px solid var(--divider);
+  }
+  td.mono { font-family: "Consolas", monospace; }
+  td.rec-pricing { color: var(--accent); font-weight: bold; }
+  td.rec-supply { color: var(--amber); font-weight: bold; }
+  td.rec-neither { color: var(--warn); font-weight: bold; }
+
+  .footer {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--divider);
+    color: var(--text-dim);
+    font-size: 11px;
+    text-align: center;
+  }
+
+  /* Crossover indicator */
+  .crossover-note {
+    background: var(--bg-alt);
+    border-left: 4px solid var(--amber);
+    padding: 14px 16px;
+    border-radius: 6px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .crossover-note strong { color: var(--amber); }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--divider);
+    margin-bottom: 24px;
+  }
+  .tab {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 14px 24px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.15s;
+  }
+  .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .tab:hover:not(.active) { color: var(--text); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* WC specific */
+  .wc-layout {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 24px;
+  }
+  .wc-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .layer-card {
+    background: var(--bg-card);
+    border: 1px solid var(--divider);
+    border-left: 4px solid var(--accent);
+    padding: 18px;
+    border-radius: 8px;
+  }
+  .layer-card.l1 { border-left-color: var(--accent); }
+  .layer-card.l2 { border-left-color: #4ADE80; }
+  .layer-card.l4 { border-left-color: var(--amber); }
+  .layer-card .layer-label {
+    color: var(--text-muted);
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .layer-card .layer-value {
+    font-size: 28px;
+    font-weight: bold;
+    font-family: "Consolas", monospace;
+    margin-bottom: 4px;
+  }
+  .layer-card .layer-desc {
+    color: var(--text-dim);
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .match-table {
+    width: 100%;
+    margin-top: 16px;
+  }
+  .match-table th, .match-table td {
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+
+  @media (max-width: 1100px) {
+    .layout { grid-template-columns: 1fr; }
+    .controls { position: relative; max-height: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div class="eyebrow">UBER NYC STRATEGY EXPLORER</div>
+  <h1>Forecastable Shock Framework — Interactive</h1>
+  <p class="subtitle">Two views: per-shock strategy comparison for NYC (annual), and the forward application to World Cup 2026 at MetLife. All calculations data-anchored from N06/N07/N07b/N08 notebooks.</p>
+</header>
+
+<div class="tabs">
+  <button class="tab active" data-tab="nyc">NYC Strategy Matrix</button>
+  <button class="tab" data-tab="wc">World Cup 2026 Application</button>
+</div>
+
+<!-- ====================================================== -->
+<!-- TAB 1: NYC STRATEGY                                    -->
+<!-- ====================================================== -->
+<div class="tab-content active" id="tab-nyc">
+
+<div class="layout">
+
+  <!-- Left: Controls -->
+  <div class="controls">
+    <div class="control-group">
+      <h3>Pricing Parameters</h3>
+
+      <div class="slider-row">
+        <div class="slider-label">
+          <span>Rider price sensitivity (ε)</span>
+          <span class="value" id="val-elasticity">-0.70</span>
+        </div>
+        <input type="range" class="slider" id="elasticity" min="-1.5" max="-0.3" step="0.05" value="-0.7">
+        <div class="helper">More negative = riders more price-sensitive. Cohen 2016: ε ≈ −0.5 to −1.0 during surge.</div>
+      </div>
+
+      <div class="slider-row">
+        <div class="slider-label">
+          <span>Lyft poaching (η multiplier)</span>
+          <span class="value" id="val-eta">data-derived</span>
+        </div>
+        <input type="range" class="slider" id="eta-mult" min="0.5" max="1.5" step="0.05" value="1.0">
+        <div class="helper">How aggressively Lyft steals riders when Uber surges. 1.0 = use observed data; 1.5 = Lyft 50% more aggressive.</div>
+      </div>
+
+      <div class="slider-row">
+        <div class="slider-label">
+          <span>Max allowable surge (price ceiling)</span>
+          <span class="value" id="val-surge-cap">200%</span>
+        </div>
+        <input type="range" class="slider" id="surge-cap" min="25" max="300" step="25" value="200">
+        <div class="helper">Real Uber surge caps around 3-5x. Lower this to see effect of regulatory caps.</div>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <h3>Supply Parameters</h3>
+
+      <div class="slider-row">
+        <div class="slider-label">
+          <span>Pre-positioning capture rate</span>
+          <span class="value" id="val-supply-cap">50%</span>
+        </div>
+        <input type="range" class="slider" id="supply-cap" min="20" max="80" step="5" value="50">
+        <div class="helper">Fraction of demand spike that drivers can serve via pre-positioning. Hall 2015: 30-70% range.</div>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <h3>Shocks to Include</h3>
+      <div class="toggle-grid">
+        <button class="toggle active" data-shock="NYC sports">NYC Sports</button>
+        <button class="toggle active" data-shock="NJ pregame">NJ Pregame</button>
+        <button class="toggle active" data-shock="Heavy rain">Heavy Rain</button>
+        <button class="toggle active" data-shock="Storm">Storm Warning</button>
+      </div>
+      <div class="helper" style="margin-top: 8px;">
+        <strong style="color: var(--text-muted);">NJ Pregame</strong> = MetLife pre-game window (Giants/Jets, WC 2026).<br>
+        <strong style="color: var(--text-muted);">Heavy Rain</strong> = NOAA precip &gt; 0.30 in/hr (demand UP).<br>
+        <strong style="color: var(--text-muted);">Storm</strong> = NOAA warning active (demand DOWN; no pricing opportunity).<br>
+        <em>Civic events (parades) and political events excluded — operational levers, not pricing/supply.</em>
+      </div>
+    </div>
+
+    <button class="reset-btn" id="reset">Reset to defaults</button>
+  </div>
+
+  <!-- Right: Results -->
+  <div class="results">
+
+    <!-- Summary -->
+    <div class="summary">
+      <div class="stat-card pricing">
+        <div class="label">Pricing Total (net)</div>
+        <div class="value" id="pricing-total" style="color: var(--accent);">$0.0M</div>
+        <div class="sub" id="pricing-sub">across selected shocks</div>
+      </div>
+      <div class="stat-card supply">
+        <div class="label">Supply Total (central)</div>
+        <div class="value" id="supply-total" style="color: var(--amber);">$0.0M</div>
+        <div class="sub" id="supply-sub">across selected shocks</div>
+      </div>
+
+      <div class="winner" id="winner-card">
+        <div class="label">RECOMMENDATION</div>
+        <div class="verdict" id="winner-verdict">—</div>
+        <div class="margin" id="winner-margin">—</div>
+      </div>
+    </div>
+
+    <!-- Bar chart -->
+    <div class="chart-wrap">
+      <div class="chart-title">Per-Shock Strategy Comparison ($M annualized)</div>
+      <div class="chart-subtitle">Black bars = pricing (net of demand response + competitive penalty). Green bars = supply.</div>
+      <svg class="bar-chart" id="bar-chart" viewBox="0 0 800 360"></svg>
+    </div>
+
+    <!-- Per-shock table -->
+    <div class="shock-table">
+      <div class="chart-title" style="margin-bottom: 16px;">Per-Shock Detail</div>
+      <table id="shock-table">
+        <thead>
+          <tr>
+            <th>SHOCK</th>
+            <th>UBER LIFT</th>
+            <th>LYFT LIFT</th>
+            <th>η USED</th>
+            <th>PRICING NET</th>
+            <th>SUPPLY</th>
+            <th>RECOMMENDATION</th>
+          </tr>
+        </thead>
+        <tbody id="shock-tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="crossover-note" id="crossover-note">
+      <strong>Note:</strong> Move the sliders to see when each strategy flips. Try ε = −1.2 (more elastic) to see pricing capture shrink.
+    </div>
+
+  </div>
+</div>
+
+</div>
+<!-- end of NYC tab -->
+
+<!-- ====================================================== -->
+<!-- TAB 2: WORLD CUP                                       -->
+<!-- ====================================================== -->
+<div class="tab-content" id="tab-wc">
+
+<div class="wc-layout">
+
+  <!-- Left: WC controls -->
+  <div class="controls">
+    <div class="control-group">
+      <h3>Tournament Scenario</h3>
+
+      <div class="slider-row">
+        <div class="slider-label">
+          <span>Tourist inflow (tournament total)</span>
+          <span class="value" id="val-wc-tourists">1.0M</span>
+        </div>
+        <input type="range" class="slider" id="wc-tourists" min="0" max="2" step="1" value="1">
+        <div class="helper">
+          <strong>0.5M</strong> = conservative (Airbnb/FIFA low estimate)<br>
+          <strong>1.0M</strong> = central (FIFA mid-range projection)<br>
+          <strong>2.0M</strong> = optimistic (FIFA upper bound)
+        </div>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <h3>Scope to Display</h3>
+      <div class="toggle-grid">
+        <button class="toggle active" data-layer="L1">L1: Narrow (verified)</button>
+        <button class="toggle active" data-layer="L2">L2: + Return trips</button>
+        <button class="toggle active" data-layer="L3">L3: + Outer-borough</button>
+        <button class="toggle active" data-layer="L4">L4: Multi-day window</button>
+      </div>
+      <div class="helper" style="margin-top: 8px;">
+        <strong style="color: var(--text-muted);">L1</strong> = directly verified from TLC data (Manhattan pre-game, 4hr, 50% capture).<br>
+        <strong style="color: var(--text-muted);">L2-L4</strong> = literature-anchored multipliers stacked on L1. Each layer auditable.
+      </div>
+    </div>
+
+    <div class="control-group">
+      <h3>Framework Lever Applied</h3>
+      <div style="background: var(--bg-alt); padding: 12px; border-radius: 6px; font-size: 12px; color: var(--text-muted);">
+        Each WC match uses the <strong style="color: var(--accent);">NJ pregame</strong> recommendation from NYC framework: <strong style="color: var(--accent);">pricing optimization</strong> in Manhattan departure zones, 4-6hrs pre-kickoff.
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: WC Results -->
+  <div class="results">
+
+    <!-- Layered cards -->
+    <div class="wc-summary">
+      <div class="layer-card l1">
+        <div class="layer-label">L1 — Verified Narrow</div>
+        <div class="layer-value" id="wc-l1-value">$0.84M</div>
+        <div class="layer-desc">Manhattan pre-game, 4hr window, 50% supply capture. Direct from N02 NJ-venue methodology.</div>
+      </div>
+      <div class="layer-card l2">
+        <div class="layer-label">L3 — + Outer-borough</div>
+        <div class="layer-value" id="wc-l3-value">$2.26M</div>
+        <div class="layer-desc">Adds return trips (1.5×) and outer-borough origins (1.8×). NYC &amp; Co. visitor lodging breakdown.</div>
+      </div>
+      <div class="layer-card l4">
+        <div class="layer-label">L4 — Multi-day window</div>
+        <div class="layer-value" id="wc-l4-value">$9.03M</div>
+        <div class="layer-desc">Adds multi-day tourist rideshare (4×). Airbnb FIFA visitor stay 10-16 nights.</div>
+      </div>
+    </div>
+
+    <!-- WC chart -->
+    <div class="chart-wrap">
+      <div class="chart-title">Tournament Layered Opportunity ($ tournament-total)</div>
+      <div class="chart-subtitle">8 matches at MetLife, including the final. Each layer adds a literature-anchored multiplier on the narrow baseline.</div>
+      <svg class="bar-chart" id="wc-bar-chart" viewBox="0 0 800 280"></svg>
+    </div>
+
+    <!-- Match breakdown -->
+    <div class="shock-table">
+      <div class="chart-title" style="margin-bottom: 16px;">Per-Match Breakdown (L1 narrow basis)</div>
+      <table class="match-table" id="wc-match-table">
+        <thead>
+          <tr>
+            <th>MATCH</th>
+            <th>TYPE</th>
+            <th>L1 CAPTURE</th>
+            <th>RECOMMENDED LEVER</th>
+          </tr>
+        </thead>
+        <tbody id="wc-match-tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="crossover-note">
+      <strong>Framework note:</strong> NYC analysis says pricing dominates for NJ pregame (η near zero — Lyft doesn't poach in that scenario). World Cup at MetLife is the same shock type extended to tournament scale. L1 is what public TLC data verifies; L2-L4 layer in literature-anchored multipliers for the broader Uber-WC opportunity.
+    </div>
+
+  </div>
+</div>
+
+</div>
+<!-- end of WC tab -->
+
+<div class="footer">
+  Data sources: N02 NJ-venue methodology · N04 weather elasticity · N06 surge sizing · N07 strategy comparison · N07b competitive penalty (Lam &amp; Liu 2017 methodology) · N08 layered World Cup. All values derived from Uber + Lyft TLC HVFHS records, Jan 2024 – Aug 2025.
+</div>
+
+</div>
+
+<script>
+  // ==========================================================
+  // DATA (from notebooks)
+  // ==========================================================
+  // Per-shock baseline data — these are pre-elasticity capture numbers
+  // and observed Uber/Lyft lifts during shocks
+  const SHOCK_DATA = {
+    "NYC sports": {
+      pricing_headline: 2_150_075,   // from 07_strategy_comparison.csv
+      supply_at_50: 752_526,          // from 07_strategy_comparison.csv
+      implied_price_lift_pct: 6.26,
+      uber_lift_pct: 4.38,
+      lyft_lift_pct: 8.11,
+      observed_eta: 0.452,
+      fpm_lift_pct: 8.25,
+    },
+    "NJ pregame": {
+      pricing_headline: 2_864_330,
+      supply_at_50: 1_002_515,
+      implied_price_lift_pct: 12.09,
+      uber_lift_pct: 8.46,
+      lyft_lift_pct: 6.61,
+      observed_eta: 0.00,
+      fpm_lift_pct: 3.04,
+    },
+    "Heavy rain": {
+      pricing_headline: 4_977_570,
+      supply_at_50: 1_742_149,
+      implied_price_lift_pct: 23.96,
+      uber_lift_pct: 16.77,
+      lyft_lift_pct: 19.03,
+      observed_eta: 0.087,
+      fpm_lift_pct: 26.02,
+    },
+    "Storm": {
+      pricing_headline: 0,  // FIX A: demand falling, no pricing capture
+      supply_at_50: 2_991_239,
+      implied_price_lift_pct: 0,
+      uber_lift_pct: 1.61,
+      lyft_lift_pct: 2.26,
+      observed_eta: 0.114,
+      fpm_lift_pct: 5.67,
+    },
+  };
+
+  // Baseline elasticity (Cohen 2016 central)
+  const BASELINE_EPSILON = -0.7;
+
+  // ==========================================================
+  // CALCULATION
+  // ==========================================================
+  function calculateScenario(state) {
+    // state: { elasticity, etaMultiplier, surgeCap, supplyCapture, includedShocks }
+
+    // Demand response factor: at central ε=-0.7, capture is ~65% of headline
+    // More elastic (more negative) → smaller capture
+    // Formula: demand_response_factor = 1 / (1 + |epsilon - baseline|)
+    // Simpler: just scale linearly with elasticity ratio
+    const demandResponseFactor = Math.min(1.0, 0.65 * (BASELINE_EPSILON / state.elasticity));
+
+    const rows = [];
+    let pricingTotal = 0;
+    let supplyTotal = 0;
+
+    for (const [shock, data] of Object.entries(SHOCK_DATA)) {
+      const included = state.includedShocks.has(shock);
+      if (!included) continue;
+
+      // Apply surge cap (clip price lift)
+      const cappedLiftPct = Math.min(data.implied_price_lift_pct, state.surgeCap);
+      const capRatio = data.implied_price_lift_pct > 0
+        ? cappedLiftPct / data.implied_price_lift_pct
+        : 1.0;
+
+      // Pricing after demand response
+      const pricingAfterDemand = data.pricing_headline * demandResponseFactor * capRatio;
+
+      // Competitive penalty (Fix D: shock-specific η)
+      const etaUsed = data.observed_eta * state.etaMultiplier;
+      const shareLoss = etaUsed * (cappedLiftPct / 100);
+      const pricingNet = Math.max(0, pricingAfterDemand * (1 - shareLoss));
+
+      // Supply scales linearly with capture fraction (baseline is 50%)
+      const supplyAdjusted = data.supply_at_50 * (state.supplyCapture / 0.5);
+
+      // Determine recommendation
+      let rec, recClass;
+      if (pricingNet === 0) {
+        // Storm: no pricing opportunity. Frame supply correctly.
+        rec = "Withdraw supply (demand falling)";
+        recClass = "rec-neither";
+      } else if (pricingNet > supplyAdjusted * 1.5) {
+        rec = "Pricing dominant";
+        recClass = "rec-pricing";
+      } else if (pricingNet > supplyAdjusted) {
+        rec = "Pricing (tie/lean)";
+        recClass = "rec-pricing";
+      } else if (supplyAdjusted > pricingNet * 1.5) {
+        rec = "Supply dominant";
+        recClass = "rec-supply";
+      } else {
+        rec = "Supply (lean)";
+        recClass = "rec-supply";
+      }
+
+      rows.push({
+        shock,
+        uber_lift: data.uber_lift_pct,
+        lyft_lift: data.lyft_lift_pct,
+        eta_used: etaUsed,
+        pricing_net: pricingNet,
+        supply: supplyAdjusted,
+        recommendation: rec,
+        recClass,
+      });
+
+      pricingTotal += pricingNet;
+      supplyTotal += supplyAdjusted;
+    }
+
+    return { rows, pricingTotal, supplyTotal };
+  }
+
+  // ==========================================================
+  // RENDER
+  // ==========================================================
+  function fmtMoney(v) {
+    if (v >= 1e6) return "$" + (v / 1e6).toFixed(2) + "M";
+    if (v >= 1e3) return "$" + (v / 1e3).toFixed(0) + "K";
+    return "$" + v.toFixed(0);
+  }
+
+  function render() {
+    const elasticity = parseFloat(document.getElementById("elasticity").value);
+    const etaMultiplier = parseFloat(document.getElementById("eta-mult").value);
+    const surgeCap = parseFloat(document.getElementById("surge-cap").value);
+    const supplyCapture = parseFloat(document.getElementById("supply-cap").value) / 100;
+
+    document.getElementById("val-elasticity").textContent = elasticity.toFixed(2);
+    document.getElementById("val-eta").textContent = etaMultiplier === 1.0 ? "data-derived" : (etaMultiplier.toFixed(2) + "× obs");
+    document.getElementById("val-surge-cap").textContent = surgeCap.toFixed(0) + "%";
+    document.getElementById("val-supply-cap").textContent = (supplyCapture * 100).toFixed(0) + "%";
+
+    const includedShocks = new Set();
+    document.querySelectorAll(".toggle.active").forEach(btn => {
+      includedShocks.add(btn.dataset.shock);
+    });
+
+    const result = calculateScenario({
+      elasticity,
+      etaMultiplier,
+      surgeCap,
+      supplyCapture,
+      includedShocks,
+    });
+
+    // Update totals
+    document.getElementById("pricing-total").textContent = fmtMoney(result.pricingTotal);
+    document.getElementById("supply-total").textContent = fmtMoney(result.supplyTotal);
+    document.getElementById("pricing-sub").textContent =
+      `across ${result.rows.length} shocks · ε=${elasticity.toFixed(2)} · cap @ ${surgeCap}%`;
+    document.getElementById("supply-sub").textContent =
+      `${result.rows.length} shocks · ${(supplyCapture * 100).toFixed(0)}% capture`;
+
+    // Winner card
+    const winnerCard = document.getElementById("winner-card");
+    const verdict = document.getElementById("winner-verdict");
+    const margin = document.getElementById("winner-margin");
+    const diff = result.pricingTotal - result.supplyTotal;
+    const absRatio = result.supplyTotal > 0
+      ? Math.max(result.pricingTotal, result.supplyTotal) / Math.min(result.pricingTotal || 1, result.supplyTotal)
+      : Infinity;
+
+    if (Math.abs(diff) < 100_000) {
+      winnerCard.className = "winner supply-wins";
+      verdict.textContent = "Recommendation depends on non-dollar factors";
+      verdict.style.color = "var(--amber)";
+      margin.textContent = `Pricing and supply within $100K — judgment call`;
+    } else if (diff > 0) {
+      winnerCard.className = "winner";
+      verdict.textContent = `Pricing wins by ${fmtMoney(diff)}`;
+      verdict.style.color = "var(--accent)";
+      margin.textContent = `${absRatio.toFixed(2)}× supply at current settings`;
+    } else {
+      winnerCard.className = "winner supply-wins";
+      verdict.textContent = `Supply wins by ${fmtMoney(-diff)}`;
+      verdict.style.color = "var(--amber)";
+      margin.textContent = `${absRatio.toFixed(2)}× pricing at current settings`;
+    }
+
+    // Render bar chart
+    renderChart(result.rows);
+
+    // Render table
+    const tbody = document.getElementById("shock-tbody");
+    tbody.innerHTML = "";
+    result.rows.forEach(r => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><strong>${r.shock}</strong></td>
+        <td class="mono">${r.uber_lift > 0 ? "+" : ""}${r.uber_lift.toFixed(1)}%</td>
+        <td class="mono">${r.lyft_lift > 0 ? "+" : ""}${r.lyft_lift.toFixed(1)}%</td>
+        <td class="mono">${r.eta_used.toFixed(2)}</td>
+        <td class="mono">${fmtMoney(r.pricing_net)}</td>
+        <td class="mono">${fmtMoney(r.supply)}</td>
+        <td class="${r.recClass}">${r.recommendation}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // Crossover note dynamic
+    let crossoverHTML = `<strong>Note:</strong> `;
+    if (Math.abs(diff) < 500_000) {
+      crossoverHTML += `Pricing and supply are within $500K — small parameter changes flip the recommendation. This is the regime where regulatory/franchise considerations become decisive.`;
+    } else if (elasticity < -1.0) {
+      crossoverHTML += `At ε=${elasticity.toFixed(2)} (highly elastic), demand response is large — pricing capture shrinks. Pricing wins narrower or supply takes over.`;
+    } else if (etaMultiplier > 1.3) {
+      crossoverHTML += `Cross-elasticity boosted ${etaMultiplier.toFixed(2)}× — Lyft is poaching more share than baseline. Pricing loses ground.`;
+    } else if (supplyCapture > 0.65) {
+      crossoverHTML += `Supply capture at ${(supplyCapture * 100).toFixed(0)}% — assumes strong forecastability and good pre-positioning. This is the optimistic supply case.`;
+    } else {
+      crossoverHTML += `Current settings favor pricing across most shocks. Try ε = −1.2 (highly elastic) or η × 1.5 to see when supply wins.`;
+    }
+    document.getElementById("crossover-note").innerHTML = crossoverHTML;
+  }
+
+  function renderChart(rows) {
+    const svg = document.getElementById("bar-chart");
+    svg.innerHTML = "";
+    const W = 800, H = 360;
+    const margin = { top: 20, right: 40, bottom: 60, left: 80 };
+    const innerW = W - margin.left - margin.right;
+    const innerH = H - margin.top - margin.bottom;
+
+    if (rows.length === 0) {
+      svg.innerHTML = `<text x="${W/2}" y="${H/2}" fill="#6B7280" text-anchor="middle" font-size="14">No shocks selected</text>`;
+      return;
+    }
+
+    const maxVal = Math.max(
+      ...rows.flatMap(r => [r.pricing_net, r.supply]),
+      1_000_000
+    );
+    const barGroupWidth = innerW / rows.length;
+    const barWidth = barGroupWidth * 0.35;
+
+    // Y axis grid + labels
+    const yTicks = 5;
+    for (let i = 0; i <= yTicks; i++) {
+      const val = (maxVal / yTicks) * i;
+      const y = margin.top + innerH - (i / yTicks) * innerH;
+      svg.innerHTML += `<line x1="${margin.left}" y1="${y}" x2="${W - margin.right}" y2="${y}" stroke="#2A2A2A" stroke-width="1"/>`;
+      svg.innerHTML += `<text x="${margin.left - 8}" y="${y + 4}" fill="#9CA3AF" text-anchor="end" font-size="11" font-family="Consolas, monospace">${fmtMoney(val)}</text>`;
+    }
+
+    rows.forEach((r, i) => {
+      const groupX = margin.left + i * barGroupWidth + barGroupWidth / 2;
+
+      // Pricing bar (left)
+      const priceH = (r.pricing_net / maxVal) * innerH;
+      const priceY = margin.top + innerH - priceH;
+      svg.innerHTML += `<rect x="${groupX - barWidth - 4}" y="${priceY}" width="${barWidth}" height="${priceH}" fill="#06C167" rx="2"/>`;
+      if (priceH > 16) {
+        svg.innerHTML += `<text x="${groupX - barWidth/2 - 4}" y="${priceY - 4}" fill="#06C167" text-anchor="middle" font-size="10" font-family="Consolas, monospace" font-weight="bold">${fmtMoney(r.pricing_net)}</text>`;
+      }
+
+      // Supply bar (right)
+      const supplyH = (r.supply / maxVal) * innerH;
+      const supplyY = margin.top + innerH - supplyH;
+      svg.innerHTML += `<rect x="${groupX + 4}" y="${supplyY}" width="${barWidth}" height="${supplyH}" fill="#F59E0B" rx="2"/>`;
+      if (supplyH > 16) {
+        svg.innerHTML += `<text x="${groupX + barWidth/2 + 4}" y="${supplyY - 4}" fill="#F59E0B" text-anchor="middle" font-size="10" font-family="Consolas, monospace" font-weight="bold">${fmtMoney(r.supply)}</text>`;
+      }
+
+      // X axis label
+      svg.innerHTML += `<text x="${groupX}" y="${margin.top + innerH + 24}" fill="#FFFFFF" text-anchor="middle" font-size="12" font-weight="bold">${r.shock}</text>`;
+      svg.innerHTML += `<text x="${groupX}" y="${margin.top + innerH + 40}" fill="#9CA3AF" text-anchor="middle" font-size="10">${r.recommendation}</text>`;
+    });
+
+    // Legend
+    svg.innerHTML += `<rect x="${margin.left}" y="2" width="12" height="12" fill="#06C167"/><text x="${margin.left + 18}" y="12" fill="#FFFFFF" font-size="11">Pricing (net)</text>`;
+    svg.innerHTML += `<rect x="${margin.left + 110}" y="2" width="12" height="12" fill="#F59E0B"/><text x="${margin.left + 128}" y="12" fill="#FFFFFF" font-size="11">Supply (central)</text>`;
+  }
+
+  // ==========================================================
+  // EVENT HANDLERS
+  // ==========================================================
+  document.querySelectorAll(".slider").forEach(slider => {
+    slider.addEventListener("input", render);
+  });
+
+  document.querySelectorAll(".toggle").forEach(btn => {
+    btn.addEventListener("click", () => {
+      btn.classList.toggle("active");
+      render();
+    });
+  });
+
+  // Scope NYC reset to NYC tab only
+  document.getElementById("reset").addEventListener("click", () => {
+    document.getElementById("elasticity").value = -0.7;
+    document.getElementById("eta-mult").value = 1.0;
+    document.getElementById("surge-cap").value = 200;
+    document.getElementById("supply-cap").value = 50;
+    document.querySelectorAll('#tab-nyc .toggle[data-shock]').forEach(btn => btn.classList.add("active"));
+    render();
+  });
+
+  // Override toggle handler to only fire render() for NYC shock toggles
+  document.querySelectorAll(".toggle").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (btn.dataset.shock) {
+        // NYC toggle — render() already wired
+        return;
+      }
+      // WC layer toggle
+      renderWC();
+    });
+  });
+
+  // ==========================================================
+  // WORLD CUP DATA & LOGIC
+  // ==========================================================
+  // From 08_tournament_total.csv (L1 narrow baseline by tourist scenario)
+  const WC_L1_BASELINE = {
+    0: 752_581,    // 0.5M tourists
+    1: 836_201,    // 1.0M tourists
+    2: 1_003_441,  // 2.0M tourists
+  };
+  const WC_TOURIST_LABELS = ["0.5M", "1.0M", "2.0M"];
+
+  // Multipliers from 08_layered_opportunity.csv
+  // L1: 1.0×, L2: 1.5×, L3: 2.7× cumulative, L4: 10.8× cumulative
+  const WC_LAYER_MULTIPLIERS = {
+    L1: 1.0,
+    L2: 1.5,
+    L3: 2.7,
+    L4: 10.8,
+  };
+
+  // 8 WC matches at MetLife (approximated; final is highest)
+  const WC_MATCHES = [
+    { match: "Group Stage Match 1", type: "Group",  weight: 1.0 },
+    { match: "Group Stage Match 2", type: "Group",  weight: 1.0 },
+    { match: "Group Stage Match 3", type: "Group",  weight: 1.0 },
+    { match: "Group Stage Match 4", type: "Group",  weight: 1.0 },
+    { match: "Round of 32",         type: "R32",    weight: 1.2 },
+    { match: "Round of 16",         type: "R16",    weight: 1.3 },
+    { match: "Quarter-Final",       type: "QF",     weight: 1.5 },
+    { match: "Final (July 19 2026)", type: "Final", weight: 2.0 },
+  ];
+
+  function renderWC() {
+    const touristIdx = parseInt(document.getElementById("wc-tourists").value);
+    const l1Base = WC_L1_BASELINE[touristIdx];
+    document.getElementById("val-wc-tourists").textContent = WC_TOURIST_LABELS[touristIdx];
+
+    // Update layer cards
+    document.getElementById("wc-l1-value").textContent = fmtMoney(l1Base * WC_LAYER_MULTIPLIERS.L1);
+    document.getElementById("wc-l3-value").textContent = fmtMoney(l1Base * WC_LAYER_MULTIPLIERS.L3);
+    document.getElementById("wc-l4-value").textContent = fmtMoney(l1Base * WC_LAYER_MULTIPLIERS.L4);
+
+    // Get active layers
+    const activeLayers = new Set();
+    document.querySelectorAll('#tab-wc .toggle.active[data-layer]').forEach(btn => {
+      activeLayers.add(btn.dataset.layer);
+    });
+
+    // Build chart data
+    const chartData = [];
+    for (const layer of ["L1", "L2", "L3", "L4"]) {
+      if (activeLayers.has(layer)) {
+        chartData.push({
+          layer,
+          value: l1Base * WC_LAYER_MULTIPLIERS[layer],
+        });
+      }
+    }
+    renderWCChart(chartData);
+
+    // Render match table
+    const tbody = document.getElementById("wc-match-tbody");
+    tbody.innerHTML = "";
+    const weightSum = WC_MATCHES.reduce((s, m) => s + m.weight, 0);
+    WC_MATCHES.forEach(m => {
+      const capture = l1Base * (m.weight / weightSum);
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><strong>${m.match}</strong></td>
+        <td class="mono" style="color: var(--text-muted);">${m.type}</td>
+        <td class="mono">${fmtMoney(capture)}</td>
+        <td class="rec-pricing">Pricing (NJ pregame methodology)</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderWCChart(data) {
+    const svg = document.getElementById("wc-bar-chart");
+    svg.innerHTML = "";
+    const W = 800, H = 280;
+    const margin = { top: 30, right: 40, bottom: 60, left: 80 };
+    const innerW = W - margin.left - margin.right;
+    const innerH = H - margin.top - margin.bottom;
+
+    if (data.length === 0) {
+      svg.innerHTML = `<text x="${W/2}" y="${H/2}" fill="#6B7280" text-anchor="middle" font-size="14">No layers selected</text>`;
+      return;
+    }
+
+    const maxVal = Math.max(...data.map(d => d.value));
+    const barWidth = innerW / data.length * 0.6;
+    const layerColors = { L1: "#06C167", L2: "#4ADE80", L3: "#86EFAC", L4: "#F59E0B" };
+
+    // Y axis grid
+    const yTicks = 5;
+    for (let i = 0; i <= yTicks; i++) {
+      const val = (maxVal / yTicks) * i;
+      const y = margin.top + innerH - (i / yTicks) * innerH;
+      svg.innerHTML += `<line x1="${margin.left}" y1="${y}" x2="${W - margin.right}" y2="${y}" stroke="#2A2A2A" stroke-width="1"/>`;
+      svg.innerHTML += `<text x="${margin.left - 8}" y="${y + 4}" fill="#9CA3AF" text-anchor="end" font-size="11" font-family="Consolas, monospace">${fmtMoney(val)}</text>`;
+    }
+
+    data.forEach((d, i) => {
+      const groupCenter = margin.left + (i + 0.5) * (innerW / data.length);
+      const barX = groupCenter - barWidth / 2;
+      const barH = (d.value / maxVal) * innerH;
+      const barY = margin.top + innerH - barH;
+      svg.innerHTML += `<rect x="${barX}" y="${barY}" width="${barWidth}" height="${barH}" fill="${layerColors[d.layer]}" rx="2"/>`;
+      svg.innerHTML += `<text x="${groupCenter}" y="${barY - 6}" fill="${layerColors[d.layer]}" text-anchor="middle" font-size="13" font-family="Consolas, monospace" font-weight="bold">${fmtMoney(d.value)}</text>`;
+      svg.innerHTML += `<text x="${groupCenter}" y="${margin.top + innerH + 22}" fill="#FFFFFF" text-anchor="middle" font-size="12" font-weight="bold">${d.layer}</text>`;
+      svg.innerHTML += `<text x="${groupCenter}" y="${margin.top + innerH + 38}" fill="#9CA3AF" text-anchor="middle" font-size="10">${WC_LAYER_MULTIPLIERS[d.layer]}×</text>`;
+    });
+  }
+
+  // WC slider wire-up
+  document.getElementById("wc-tourists").addEventListener("input", renderWC);
+  // (WC layer toggles already handled by the unified toggle handler above,
+  //  which calls renderWC via the second handler)
+
+  // ==========================================================
+  // TAB SWITCHING
+  // ==========================================================
+  document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+      tab.classList.add("active");
+      document.getElementById("tab-" + tab.dataset.tab).classList.add("active");
+    });
+  });
+
+  // Initial render for both tabs
+  render();
+  renderWC();
+</script>
+
+</body>
+</html>

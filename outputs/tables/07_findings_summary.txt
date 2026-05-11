@@ -1,0 +1,29 @@
+- COUNTERFACTUAL A (pricing): annualized capture = $9,991,974.
+- COUNTERFACTUAL B (supply): annualized capture = $6,488,430.
+- Ratio (supply/pricing): 0.65x.
+- Supply capture fraction (0.50 central) anchored to literature:
+  Hall et al. 2015 + Chen & Sheldon 2016 (driver supply elasticity ~1.0).
+- Sensitivity range: 30% capture = $3,893,058; 70% capture = $9,083,802.
+- Central estimate plausible for FORECASTABLE shocks (drivers can plan ahead);
+  reactive surge would be at lower bound.
+
+TRADE-OFF FRAMING (not a quantitative dominance claim):
+- Pricing captures more headline revenue but is extractive: raises prices
+  on captive riders during shocks. After elasticity haircut (60-70% of
+  headline due to demand response), realistic capture is ~$6,494,783.
+- Supply captures less but is operational: pre-positions drivers to
+  serve more riders at base fare. Captures ~$6,488,430 (central
+  case with literature-anchored sensitivity in 07_supply_sensitivity.csv).
+
+STRATEGIC RECOMMENDATION: Supply optimization, despite smaller headline.
+  · Aligns with Uber's post-NYC-strike regulatory posture.
+  · Avoids competitive vulnerability (Lyft holds prices = Uber loses share).
+  · Avoids PR risk (no surcharges on event/storm riders).
+  · Builds long-term driver supply infrastructure usable across all shocks.
+  · Tradeoff: lower per-shock revenue, higher franchise value.
+
+CAVEATS:
+- Surge multipliers and driver count are INFERRED, not observed.
+- fare_per_mile and total_driver_pay used as supply-tightness proxies.
+- Supply-capture fraction is scenario-based and should be updated with
+  observed driver response from pilot incentive programs.

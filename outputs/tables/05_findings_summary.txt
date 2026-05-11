@@ -1,0 +1,10 @@
+- TLC↔subway within-day elasticity: β=0.2318 (weakly positive).
+  · A 1% rise in subway riders ⇒ ~0.23% change in Uber trips, same zone-day.
+  · Modes co-move; CP-displaced trips did NOT cleanly land in subway.
+  · Demand likely dominated by shared citywide drivers (events, weather, DoW), not mode-specific shifts.
+- Pre-CP β=0.2384 | Post-CP β=0.2811 | Δ=0.0428.
+  · Post-CP correlation increased slightly — does NOT support strong substitution channel.
+- Heavy rain DECOUPLES modes: elasticity drops to ~0.13 (from ~0.23 dry).
+  · Suggests weather IS a substitution shock (rideshare gains, subway doesn't follow).
+- Hour-of-week corr range [0.270, 0.678]: always positive, never substitutive at the hourly level.
+- BOV: CRZ post-CP saw BOTH Uber (+21,894/day) and subway (+515,528/day) rise — confounded with seasonal/MTA factors; do not over-interpret.

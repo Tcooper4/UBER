@@ -1,0 +1,21 @@
+Panel regressions in N02-N05 use zone-day aggregated data rather than the
+full hourly panel. The hourly panel (3.65M obs × 14,877 hourly periods)
+generates a within-transformation matrix exceeding available RAM during
+two-way FE estimation.
+
+Aggregation: trip_count, fare, miles summed over hours within day;
+fare_per_mile computed as ratio-of-sums on daily totals (consistent with
+locked methodology); binary event flags = max() over hours (flagged if
+ANY hour in day was flagged). Continuous weather: temp = mean, precip =
+sum, wind = max.
+
+Hour-level granularity is preserved in:
+- Per-event lift analysis (N02 Cells 4-6, 10b, 12) via collapse-first
+  baseline matching at (zone, hour-of-week) level
+- Hour-of-week substitution correlation (N05 Cell 5)
+- Holiday day-level vs same-DOW baseline (N02 Cell 11)
+
+Daily aggregation is the standard panel-DiD specification in published
+transportation economics (Hall, Kendrick & Nosko 2015; Cramer & Krueger
+2016). The hour-level signal is recovered via the per-event analysis
+where it matters most.

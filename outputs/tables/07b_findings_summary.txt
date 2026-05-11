@@ -1,0 +1,21 @@
+COMPETITIVE RESPONSE PENALTY — Path 3-lite analysis (FIX D: per-shock η)
+
+ACADEMIC ANCHORS:
+  - Cohen et al. 2016 NBER w22627: own-price elasticity during surge context
+  - Lam & Liu 2017 MIT IDE: cross-platform substitution (5-min windows);
+    we use hour-level Uber vs Lyft trip lifts / Uber fpm lift as coarse η.
+
+CALCULATION:
+  Per-shock η from 07b_per_shock_eta.csv; implied ΔP_s from N07 pricing rows.
+  Aggregate competitive penalty (central): $0.11M.
+
+RESULT:
+  Pricing strategy NET capture: $6.3M - $6.4M
+  Supply strategy capture: $3.9M - $9.1M
+
+INTERPRETATION:
+  After shock-specific competitive response, compare net pricing band to supply.
+
+CAVEATS:
+  - Hour-level η is noisy; ±50% brackets and literature fallback for invalid η.
+  - Regulatory / franchise factors not quantified here.

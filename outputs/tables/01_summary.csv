@@ -1,0 +1,4 @@
+platform_scope,start_date,end_date,n_days,total_trips,avg_daily_trips,avg_fare_per_mile_ratio_sums,n_tlc_zones_with_trips,n_crz_zones_in_data,n_zones_any_major_event_day,n_zones_with_sapo_event_day
+uber,2024-01-01,2025-08-31,609,294560482,483678.95238095237,5.012465951085691,261,36,4,260
+lyft,2024-01-01,2025-08-31,609,104305835,171273.94909688013,4.8502756944757905,260,36,4,260
+combined,2024-01-01,2025-08-31,609,398866317,654952.9014778325,4.971214891285983,261,36,4,260

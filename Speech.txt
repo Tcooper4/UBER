@@ -1,0 +1,89 @@
+Slide 1 — Title (30 sec)
+
+"Hi, I'm Thomas. The case asked how Uber could make money from public data. Most people would look at the obvious — marketing spend, customer segmentation, growth markets. I went somewhere less obvious: operational shocks.
+NYC rideshare demand isn't random. Major events, weather, congestion pricing, even parades — these are all forecastable. And forecastable means optimizable. Over the next 30 minutes I'll walk you through a framework that catalogs five shock types, sizes the NYC opportunity at $13–20M annually, and demonstrates against MetLife 2026.
+Behind these numbers: 399 million trips, 20 months of TLC data, nine public datasets fused into a 7.2 million row panel."
+
+Slide 2 — Contents (15 sec)
+
+"Six sections. Problem and hypothesis, data and methodology, the five shocks, sizing, World Cup application, and risks."
+
+Slide 3 — Business Problem (90 sec)
+
+"When a Sunday Giants game happens at MetLife, demand spikes. Uber knows this — they surge. But the question is: how much should they surge? When does pre-positioning drivers beat raising prices? When is neither the right move because streets are physically closed?
+My hypothesis: five forecastable shock categories exist in public data. Each has a different operational profile. The right lever — pricing or supply — is dictated by the character of the shock. I size the NYC opportunity at $13–20M annually across four shock types and apply the framework forward to World Cup 2026."
+
+Slide 4 — Data Foundation (60 sec)
+
+"Nine public sources fused. TLC trip records is the trunk — 399M trips at zone-hour granularity. Built into a 7.2M-row analytical panel covering 263 zones across 20 months. Average fare-per-mile of $4.97 across the period.
+Three methodology decisions worth flagging: I subtract congestion pricing tolls before computing fare-per-mile so we're measuring the underlying fare. I use hour-level event windows because day-level dilutes the signal three-fold. And NJ-side events including MetLife I flag on Manhattan departure zones since I can only see the Manhattan side of those trips."
+
+Slide 5 — Methodology (75 sec)
+
+"Five shock categories on top. Two operational counterfactuals on bottom.
+The pricing counterfactual asks: how much could Uber capture by raising prices during shocks? Mathematically clean, but comes with reputational exposure and competitive risk.
+The supply counterfactual asks: how much could Uber capture by pre-positioning drivers ahead of forecastable shocks? Lower headline dollars, but operational, defensible, and builds long-term infrastructure.
+Each shock gets analyzed independently. The right strategy depends on the shock's character."
+
+Slide 6 — EDA (60 sec)
+
+"Standard NYC patterns check out. 8am and 6pm peaks, Friday and Saturday night peaks. Data quality is solid before causal analysis.
+Two flags. One, the obvious volume drop at Jan 5, 2025 — congestion pricing. But — and this matters — fare-per-mile dropped post-CP after stripping the toll. Reframes the story from 'prices rose, riders fled' to 'volume crashed, fares held.' Two, Lyft is non-stationary — its statistics drift over time — so I used panel fixed-effects with first-differences to handle that. Robustness is in the appendix."
+
+Slide 7 — Events (90 sec)
+
+"NYC sports games lift trips about 4% per event median. Clean signal. New Jersey pre-game lift from Manhattan departure zones is 5.7%.
+But look at this: NYE Ball Drop in Times Square shows a 97% drop — and that's the most extreme. The median civic event lift is negative 30%. Parades, marathons, special events all sit in that range.
+This isn't a data bug. These are operational-blocker shocks, not pricing shocks. Streets close. Pickup access is restricted. You can't surge during a parade because no driver can reach the rider. Completely different operational lever — communications, rerouting, alternative pickup points."
+
+Slide 8 — Weather + Substitution (75 sec)
+
+"Weather: rain elasticity is monotonically positive and asymmetric. Light rain plus 0.5%, moderate +2.2%, heavy rain +4.4%. More rain pushes more riders into rideshare. Storms are different — minus 1.9% — full storms collapse all activity.
+Substitution: I tested whether subway substitutes for rideshare. It mostly doesn't. Within-day elasticity is +0.23 — they move together, not against each other. That means underlying citywide demand drivers are doing the work, not direct substitution. But in heavy rain, the elasticity drops to 0.13 — the modes decouple, riders move TO rideshare. Weather is the only genuine substitution shock I identified."
+
+Slide 9 — Congestion Pricing (2 min — slow down)
+
+"This is the slide where I have to be honest about a limitation.
+The naive difference-in-differences — DiD from here on — says CRZ volume dropped 11% after congestion pricing. That number is in the headlines. But before reporting it I ran a placebo test — the box on the right.
+A placebo runs the same DiD specification on fake treatment dates before the real Jan 5 cutoff. If congestion pricing caused the gap, the placebos should return roughly zero. They don't. All four placebo dates return significant negative coefficients. Which means CRZ zones were already declining relative to non-CRZ zones throughout 2024. The pre-existing trend explains 7 to 10 percentage points of the headline 11%. The true causal effect of CP is closer to zero to four percent — not eleven.
+I'm reporting this honestly because that's the academic standard. The naive number would have been the easy thing to put on a slide. The placebo failure is the test working correctly — and it tells you something important about identifying CP effects in a market that was already shifting."
+
+Slide 10 — Strategy Comparison (NEW recommendation, 2 min)
+
+"Head-to-head pricing vs supply, with full literature anchors.
+Pricing headline: $19.9M. But this overstates capture in two ways. First, demand response: when prices rise, riders pull back. Using Cohen et al. 2016's central elasticity estimate of −0.7, the realistic capture drops to $13.0M. Second, competitive response: if Uber raises prices and Lyft holds, some riders switch platforms. After accounting for this with cross-price elasticity of 0.4 from rideshare literature, the net is $12.4M.
+Supply central: $7.0M, with literature-anchored sensitivity range of $4.2-$9.8M from Hall et al. 2015 driver supply elasticities.
+Pricing wins on dollars by 1.8× even after both adjustments — and importantly, all four shock types favor pricing per-shock. My recommendation is pricing.
+I want to flag two considerations I did NOT quantify: regulatory backlash post-NYC-strike, and the long-term franchise value of supply infrastructure. These are real but I'd argue they don't close a $5M annual gap. The full conversation log shows how I arrived at this — initial framing leaned supply on judgment, but once I anchored the analysis to literature, the data flipped the recommendation."
+
+Slide 11 — Competitive Penalty (NEW, 90 sec)
+
+"I want to spend a minute on the competitive penalty calculation since it's where my recommendation could have gone wrong.
+The question: if Uber raises prices during shocks and Lyft holds steady, how much demand switches platforms?
+Three literature anchors. Cohen 2016 at NBER establishes Uber's own-price elasticity at −0.5 to −1.0. Lam and Liu 2017 at MIT IDE directly documents cross-platform substitution — Uber surge events trigger measurable Lyft demand within 5 minutes. And the cross-price elasticity consensus for rideshare substitutes sits in 0.3 to 0.5.
+Applied to our numbers: average price lift across shocks is 11.2%. At η = 0.4 cross-elasticity, share loss to Lyft is 4.5% of post-elasticity revenue — about $0.6M. Sensitivity range is $0.4M to $0.7M.
+The penalty is small because the price lifts themselves are modest. Even at η = 0.5 the pricing strategy still nets $12.2M. The recommendation holds across the sensitivity range."
+
+Slide 12 — World Cup (90 sec — updated "the play")
+
+"MetLife hosts eight World Cup matches in 2026 including the final. Same framework applies.
+Layer 1: $0.8M verified narrow. Manhattan pre-game departure, 4-hour window, 50% supply capture.
+Layer 4: $8.1 to $10.8M broader scenario. Three multipliers each anchored: return trips at 1.5×, outer-borough origins at 1.8× from NYC & Co. visitor data, multi-day window at 4× from Airbnb FIFA stay-length data. Cumulative 10.8×.
+The operational play applies pricing strategy at the forecastable shock window — 4 to 6 hours pre-kickoff in Manhattan departure clusters. Final = maximum surge tier. 8-language in-app prompts for tourists. Monitor Lyft baseline pricing for competitive calibration on the day."
+
+Slide 13 — Appendix: Comparable Events (reference if asked)
+
+"Layer 4 magnitude is consistent with the evidence. NJ Transit alone projects $48M from World Cup rail — rideshare likely matches or exceeds. Uber's own data shows 33% higher driver earnings on Super Bowl Sunday — confirms mega-events are operationally distinct. FIFA's own $6.4B regional tourist spending estimate implies $130-200M total regional rideshare. My Layer 4 captures only the supply-optimization slice."
+
+Slide 14 — Closing (30 sec)
+
+"Five forecastable shocks, two operational levers, one framework. $13-20M annual opportunity in NYC, applied forward to World Cup 2026 at MetLife.
+Happy to take questions."
+
+Slide 15 — AI Workflow (skip in flow; reference if asked)
+
+"How I used AI: hypothesis development, methodology design, code generation through Cursor, academic anchoring, and deck iteration. Where I pushed back: I required derivation from public data for the World Cup magnitude, literature anchoring for supply capture fraction, and analytical work behind the strategy recommendation. The latter actually flipped the recommendation — initial framing leaned supply on judgment, but once anchored to Cohen 2016 and Lam & Liu 2017, the data favored pricing. Full conversation log submitted separately."
+
+Slide 16 — Closing
+
+"Five forecastable shocks, two operational levers, one framework. $12.4M annual NYC pricing capture after all literature-anchored adjustments. World Cup 2026 at MetLife: same framework, $0.8M verified narrow, $8.1M-$10.8M broader scenario. Happy to take questions."

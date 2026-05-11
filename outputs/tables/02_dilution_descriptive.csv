@@ -1,0 +1,2 @@
+metric,day_flag_only_hours,sym_flag_only_hours,both_flagged_hours,day_flag_total,sym_flag_total,dilution_ratio_day_to_hour,interpretation
+flag_overlap_descriptive,9936,121,4368,14304,4489,3.186455780797505,Day-level flagging produces ~3.2x more flagged hours than precise hour-level windows. Naive day-level analysis would dilute estimated event effects by ~69%.

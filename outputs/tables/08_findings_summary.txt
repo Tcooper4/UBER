@@ -1,0 +1,34 @@
+WORLD CUP 2026 AT METLIFE — LAYERED OPPORTUNITY SIZING
+
+Layer 1 (NARROW VERIFIED): Manhattan pre-game, 4hrs, 50% capture
+  +1M tourists: ~$0.8M tournament total
+  Sources: Direct from N02 NJ-venue methodology + N07 capture frac
+
+Layer 2 (+ return trips, midpoint assumption): 1.5x
+Layer 3 (+ outer-borough/NJ-side origins): 2.7x cumulative
+Layer 4 (+ multi-day tourist rideshare window): 10.8x cumulative
+
+FULLY-LAYERED ESTIMATES at +500K/+1M/+2M tourists:
+  +500K -> $8.1M
+  +1M  -> $9.0M
+  +2M  -> $10.8M
+
+BENCHMARK SANITY CHECK:
+  Super Bowl LVIII: ~$25M Uber estimated revenue
+  F1 Vegas 2024: ~$30M
+  FIFA NY/NJ tourist spend: $6.4B (rideshare ~2-3% = $130-200M total)
+  Layer anchors: NYC & Co. visitor lodging split + Airbnb FIFA stay-length ranges
+
+INTERPRETATION:
+  Layer 4 is the BROADER OPPORTUNITY (full Uber WC engagement).
+  Layer 1 is the SUPPLY OPTIMIZATION OPPORTUNITY (incremental beyond
+  baseline). Difference: Uber will earn the full opportunity regardless;
+  the framework identifies how much MORE through pre-positioning.
+
+DECK FRAMING: report Layer 1 as 'verified narrow' AND Layer 4 as
+'full opportunity (extrapolated)' to demonstrate scope discipline.
+
+ANCHOR NOTES:
+  - L2 (1.5x): judgment midpoint; NJ Transit return price/crowding implies partial rideshare return substitution.
+  - L3 (2.7x cumulative): NYC & Co. overnight visitor split (~55% Manhattan / 45% non-Manhattan+NJ).
+  - L4 (10.8x cumulative): Airbnb FIFA stay-length + Roadtrips duration suggest 4x midpoint on match-day base.

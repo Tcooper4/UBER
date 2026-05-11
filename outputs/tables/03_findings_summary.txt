@@ -1,0 +1,15 @@
+⚠️  PRE-TRENDS VIOLATION (parallel trends assumption fails):
+   All 4 placebo dates (pre-Jan 5 2025) show significant negative β:
+     2024-06-01: β=-0.080 | 2024-09-01: β=-0.058
+     2024-11-01: β=-0.096 | 2024-12-01: β=-0.126
+   CRZ zones were already declining vs non-CRZ throughout 2024.
+   Naive DiD attributes ~11% drop to CP; adjusting for pre-existing
+   trend, true CP causal effect is closer to 0-4%, not 11%.
+   Headline figure should be reported with this caveat.
+
+- DiD headline (Uber, log_trips): β=-0.1186 → CRZ trip volume changed by -11.2% post-CP relative to non-CRZ.
+- DiD headline (Uber, log_fpm): β=-0.0144 → CRZ fare-per-mile changed by -1.4% post-CP (contrarian if negative).
+- See 03_pre_trends_placebo.csv for full placebo coefficients.
+- See 03_event_study_plot.png: weekly + daily event-study with CIs.
+- See 03_donut_window_robustness.csv: drops ±2 weeks around Jan 5 to handle anticipation/holiday confounds.
+- Lyft placebo: see 03_did_lyft_placebo.csv (PanelOLS + FD; FD addresses Lyft non-stationarity).
