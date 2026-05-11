@@ -36,7 +36,6 @@ from outputs.visualization_design_system import (
     format_dollar_axis,
     limit_ticks,
     set_rcparams,
-    annotate_callout,
 )
 
 set_rcparams()
@@ -486,84 +485,96 @@ print(text_out)
 
 
 # %%
-# Cell 9: Visualization — scenario band + stacked final
-fig8, ax8 = plt.subplots(figsize=(10, 7))
-inflows = tournament_totals["tourist_inflow"].values / 1e6
-totals_v = tournament_totals["tournament_total"].values
-grp7 = tournament_totals["rev_per_group_match"].values * 7.0
-final_p = tournament_totals["rev_for_final"].values
-x_centers = np.asarray(inflows, dtype=float)
-bw = 0.26
-ax8.bar(
-    x_centers,
-    grp7,
-    width=bw,
-    label="Non-final matches (×7)",
-    color=PALETTE["accent"],
-    edgecolor="white",
-)
-ax8.bar(
-    x_centers,
-    final_p,
-    width=bw,
-    bottom=grp7,
-    label="FINAL match lift",
-    color=PALETTE["warn"],
-    edgecolor="white",
-)
-for xi, tot, fp in zip(x_centers, totals_v, final_p):
-    ax8.plot([xi - 0.35, xi + 0.35], [tot, tot], color=PALETTE["muted"], lw=1.0, ls="--", alpha=0.7)
-    ax8.text(
-        xi,
-        tot + max(totals_v) * 0.02,
-        f"${tot/1e6:.1f}M total",
-        ha="center",
-        fontsize=10,
-        fontweight="bold",
-        color=PALETTE["uber"],
+# Cell 9: Visualization — layered opportunity, L1 narrow vs L4 broader scenario
+"""
+Plots the layered sizing from Cell 6 across tourist inflow scenarios.
+Shows BOTH the narrow verified L1 and the broader L4 scenario to demonstrate
+scope discipline. Matches deck slide 12 framing.
+"""
+
+fig8, ax8 = plt.subplots(figsize=(11, 7))
+
+# Pivot layered_df to wide format: rows = tourist inflows, cols = layers
+inflows_M = sorted(layered_df["tourist_inflow"].unique())
+layer_order = ["L1_narrow_baseline", "L2_return_trips", "L3_broader_origins", "L4_multi_day_window"]
+layer_labels = {
+    "L1_narrow_baseline": "L1: Narrow verified",
+    "L2_return_trips": "L2: + Return trips",
+    "L3_broader_origins": "L3: + Outer-borough",
+    "L4_multi_day_window": "L4: + Multi-day window",
+}
+layer_colors = {
+    "L1_narrow_baseline": PALETTE["accent"],
+    "L2_return_trips": "#4ADE80",
+    "L3_broader_origins": "#86EFAC",
+    "L4_multi_day_window": PALETTE["warn"],
+}
+
+x_centers = np.arange(len(inflows_M), dtype=float)
+n_layers = len(layer_order)
+bar_width = 0.18
+ymax = float(layered_df["tournament_estimate"].max()) if len(layered_df) else 1.0
+label_dy = max(ymax * 0.012, 5_000.0)
+
+for li, layer in enumerate(layer_order):
+    vals = []
+    for ti in inflows_M:
+        sub = layered_df.loc[
+            (layered_df["tourist_inflow"] == ti) & (layered_df["layer"] == layer),
+            "tournament_estimate",
+        ]
+        v = float(sub.iloc[0]) if len(sub) else 0.0
+        vals.append(v)
+    x_pos = x_centers + (li - (n_layers - 1) / 2) * bar_width
+    ax8.bar(
+        x_pos,
+        vals,
+        width=bar_width,
+        label=layer_labels[layer],
+        color=layer_colors[layer],
+        edgecolor="white",
     )
-low_h, high_h = totals_v.min(), totals_v.max()
-ax8.fill_between(
-    [x_centers.min() - 0.5, x_centers.max() + 0.5],
-    low_h,
-    high_h,
-    color=PALETTE["crz"],
-    alpha=0.06,
-    zorder=0,
-)
+    for xi, v in zip(x_pos, vals):
+        ax8.text(
+            xi,
+            v + label_dy,
+            f"${v/1e6:.1f}M",
+            ha="center",
+            fontsize=9,
+            fontweight="bold",
+            color=layer_colors[layer],
+        )
+
 ax8.set_xlabel("Tourist inflow scenario (millions, tournament-wide)")
-ax8.set_ylabel("Tournament-total supply-side capture ($)")
+ax8.set_ylabel("Tournament-total opportunity ($)")
 format_dollar_axis(ax8, "y")
 limit_ticks(ax8, "y")
 ax8.set_xticks(x_centers)
-ax8.set_xticklabels([f"{x:.1f}M tourists" for x in x_centers])
-mid_fin_k = float(final_p[len(final_p) // 2] / 1e3)
-annotate_callout(
-    ax8,
-    xy=(x_centers[-1], grp7[-1] + final_p[-1] * 0.5),
-    text=f"FINAL ≈ ${mid_fin_k:.0f}K revenue\n(highest single-match spike)",
-    xytext=(-120, -55),
-)
+ax8.set_xticklabels([f"{ti/1e6:.1f}M tourists" for ti in inflows_M])
+
 fig8.suptitle(
-    "World Cup at MetLife 2026 — ~$5M–$25M opportunity across tourist scenarios",
+    "World Cup at MetLife 2026 — $0.8M verified narrow → $8.1M–$10.8M broader scenario",
     fontsize=14,
     fontweight="bold",
     y=1.02,
 )
 ax8.set_title(
-    "Stacked capture — group-stage matches vs FINAL | supply optimization framing",
-    fontsize=11,
+    "Layered opportunity by scope | L1 verified from public TLC data; L2–L4 anchored to NYC & Co. + Airbnb FIFA research",
+    fontsize=10,
     color="#555555",
 )
-ax8.legend(loc="upper left", frameon=True)
+ax8.legend(loc="upper left", frameon=True, fontsize=10)
+
 plt.tight_layout(rect=[0, 0.06, 1, 0.93])
 add_footnote(
     fig8,
-    "Anchored on weekend NFL pre-game lift (N02); tourist scaling 2×–4×; stadium capacity 82,500.",
+    "L1: Manhattan pre-game departure, 4-hr window, 50% supply capture (N02 + N07). "
+    "L2/L3 anchored to NYC & Co. visitor lodging breakdown. L4 anchored to Airbnb FIFA 2026 avg stay 10-16 nights.",
     y=-0.02,
 )
-plt.savefig(FIG_DIR / "08_world_cup_scenario.png")
+plt.savefig(FIG_DIR / "08_world_cup_scenario.png", dpi=150, bbox_inches="tight")
 plt.close()
+print(f"Saved updated layered visualization to {FIG_DIR / '08_world_cup_scenario.png'}")
 
 
 # %%
